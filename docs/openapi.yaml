@@ -1,0 +1,187 @@
+openapi: 3.0.0
+info:
+  title: Star Wars Challenge API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Ping
+    description: Ping API
+  - name: Planet
+    description: Planet API
+
+paths:
+  /api/ping:
+    get:
+      tags:
+        - Ping
+      summary: Ping API
+      description: Retornar uma mensagem de pong
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: pong
+
+  /api/v1/planets:
+    get:
+      tags:
+        - Planet
+      summary: Listar planetas
+      description: Listar todos os planetas
+      parameters:
+        - name: search
+          in: query
+          description: Nome do planeta
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlanetResponse"
+              examples:
+                With Values:
+                  value:
+                    - id: 1
+                      name: Tatooine
+                      climate: Arid
+                      terrain: Desert
+                      number_of_films: 5
+                    - id: 2
+                      name: Alderaan
+                      climate: Temperate
+                      terrain: Grasslands, mountains
+                      number_of_films: 2
+                Empty:
+                  value: []
+
+    post:
+      tags:
+        - Planet
+      summary: Criar planeta
+      description: Criar um novo planeta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlanetRequest"
+            example:
+              name: Tatooine
+              climate: Arid
+              terrain: Desert
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanetResponse"
+              example:
+                id: 1
+                name: Tatooine
+                climate: Arid
+                terrain: Desert
+                number_of_films: 5
+  /api/v1/planets/{id}:
+    get:
+      tags:
+        - Planet
+      summary: Buscar planeta
+      description: Buscar um planeta pelo ID
+      parameters:
+        - name: id
+          in: path
+          description: ID do planeta
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanetResponse"
+              example:
+                id: 1
+                name: Tatooine
+                climate: Arid
+                terrain: Desert
+                number_of_films: 5
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: Planeta não encontrado
+
+    delete:
+      tags:
+        - Planet
+      summary: Deletar planeta
+      description: Deletar um planeta pelo ID
+      parameters:
+        - name: id
+          in: path
+          description: ID do planeta
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: Planeta não encontrado
+
+components:
+  schemas:
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    PlanetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        climate:
+          type: string
+        terrain:
+          type: string
+        number_of_films:
+          type: integer
+
+    PlanetRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        climate:
+          type: string
+        terrain:
+          type: string

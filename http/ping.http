@@ -1,0 +1,14 @@
+GET http://localhost:8080/api/ping
+
+###
+
+GET http://localhost:8080/api/ping/cleyson
+
+###
+
+POST http://localhost:8080/api/ping
+Content-Type: application/json
+
+{
+    "message": "dado enviado pelo corpo da requisição"
+}
